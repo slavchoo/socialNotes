@@ -29,7 +29,7 @@ abstract class Controller_Admin_GRID extends Controller_Admin {
             } catch (Kohana_Exception $e) {
                 $this->template->content .= $e;
             }
-            $this->request->redirect($this->get_index_url());
+            $this->request->redirect($this->get_curr_route_index_url());
         }
 
         //render
@@ -52,7 +52,7 @@ abstract class Controller_Admin_GRID extends Controller_Admin {
             } catch (Database_Exception $e) {
                 $this->template->content .= $e;
             }
-            $this->request->redirect($this->get_index_url());
+            $this->request->redirect($this->get_curr_route_index_url());
         }
 
         //render
@@ -65,7 +65,7 @@ abstract class Controller_Admin_GRID extends Controller_Admin {
         //creation an object of a table
         $obj_orm = ORM::factory($this->_model, $obj_id);
         $obj_orm->delete();
-        $this->request->redirect($this->get_index_url());
+        $this->request->redirect($this->get_curr_route_index_url());
         //die("Model " . $this->_model . " obj with id = $obj_id deleted");
     }
 
@@ -152,7 +152,7 @@ abstract class Controller_Admin_GRID extends Controller_Admin {
         return 'admin_'.$this->_model;
     }
     
-    public function get_index_url(){
+    public function get_curr_route_index_url(){
         return Route::url($this->get_route_name(),array('action'=>'index'));
     }
     
