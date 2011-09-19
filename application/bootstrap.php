@@ -10,7 +10,7 @@ if (is_file(APPPATH . 'classes/kohana' . EXT)) {
     // Application extends the core
     require APPPATH . 'classes/kohana' . EXT;
 } else {
-    // Load empty core extension
+    // Load empty core extensiond
     require SYSPATH . 'classes/kohana' . EXT;
 }
 
@@ -94,6 +94,7 @@ Kohana::$config->attach(new Config_File);
  * Enable modules. Modules are referenced by a relative or absolute path.
  */
 Kohana::modules(array(
+    'baseapp' => MODPATH . 'baseapp',
     'auth' => MODPATH . 'auth', // Basic authentication
     // 'cache'      => MODPATH.'cache',      // Caching with multiple backends
     // 'codebench'  => MODPATH.'codebench',  // Benchmarking tool
@@ -102,10 +103,9 @@ Kohana::modules(array(
     'orm' => MODPATH . 'orm', // Object Relationship Mapping
     // 'unittest'   => MODPATH.'unittest',   // Unit testing
     'userguide' => MODPATH . 'userguide', // User guide and API documentation
-    'kw_core' => MODPATH . 'kohana-world-kw-core',
     'grid' => MODPATH . 'grid',
     'kohana_fromo' => MODPATH . 'kohana-formo',
-    'baseapp' => MODPATH . 'baseapp',
+    'kw_core' => MODPATH . 'kohana-world-kw-core',
 ));
 
 /**
@@ -121,6 +121,12 @@ Route::set('auth', 'auth(/<action>(/<id>))')
 Route::set('admin_user', 'admin/user(/<action>(/<id>))')
         ->defaults(array(
             'controller' => 'admin_user',
+            'action' => 'index'
+        ));
+
+Route::set('admin_note', 'admin/note(/<action>(/<id>))')
+        ->defaults(array(
+            'controller' => 'admin_note',
             'action' => 'index'
         ));
 

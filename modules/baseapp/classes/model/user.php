@@ -4,7 +4,7 @@ defined('SYSPATH') or die('No direct access allowed.');
 
 class Model_User extends Model_Auth_User {
 
-    public $_from_fields = array('username', 'email', 'roles', 'password');
+    public $_form_fields = array('username', 'email', 'roles', 'password');
     public $_grid_fields = array(
         'id' => array(),
         'username' => array(),

@@ -42,7 +42,6 @@ abstract class Controller_Template extends Kohana_Controller_Template {
 
     public function before() {
         parent::before();
-
         // Ajax-like request check
         if ($this->request->is_ajax() OR !$this->request->is_initial()) {
             $this->_ajax = TRUE;

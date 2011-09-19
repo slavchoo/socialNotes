@@ -17,7 +17,7 @@ abstract class Controller_Admin_GRID extends Controller_Admin {
 
         //creating a form with input fields and submit button
         $form = Formo::form()
-                ->orm('load', $obj_orm, $obj_orm->_from_fields)
+                ->orm('load', $obj_orm, $obj_orm->_form_fields)
                 ->add(I18n::get('save'), 'submit');
 
         //validation
@@ -29,7 +29,7 @@ abstract class Controller_Admin_GRID extends Controller_Admin {
             } catch (Kohana_Exception $e) {
                 $this->template->content .= $e;
             }
-            $this->request->redirect(Route::url('admin_news'));
+            $this->request->redirect($this->get_index_url());
         }
 
         //render
@@ -41,7 +41,7 @@ abstract class Controller_Admin_GRID extends Controller_Admin {
         $obj_orm = ORM::factory($this->_model);
 
         //creating a form with input fields and submit button
-        $form = Formo::form()->orm('load', $obj_orm, $obj_orm->_from_fields)->add(I18n::get('save'), 'submit');
+        $form = Formo::form()->orm('load', $obj_orm, $obj_orm->_form_fields)->add(I18n::get('save'), 'submit');
 
         //validation
         if ($form->load($_POST)->validate()) {
@@ -52,7 +52,7 @@ abstract class Controller_Admin_GRID extends Controller_Admin {
             } catch (Database_Exception $e) {
                 $this->template->content .= $e;
             }
-            $this->request->redirect(Route::url('admin_news'));
+            $this->request->redirect($this->get_index_url());
         }
 
         //render
@@ -65,7 +65,7 @@ abstract class Controller_Admin_GRID extends Controller_Admin {
         //creation an object of a table
         $obj_orm = ORM::factory($this->_model, $obj_id);
         $obj_orm->delete();
-        $this->request->redirect(Route::url('admin_news'));
+        $this->request->redirect($this->get_index_url());
         //die("Model " . $this->_model . " obj with id = $obj_id deleted");
     }
 
@@ -147,5 +147,14 @@ abstract class Controller_Admin_GRID extends Controller_Admin {
         parent::action_index();
         $this->action_grid();
     }
+    
+    public function get_route_name(){
+        return 'admin_'.$this->_model;
+    }
+    
+    public function get_index_url(){
+        return Route::url($this->get_route_name(),array('action'=>'index'));
+    }
+    
 
 }

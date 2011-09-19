@@ -7,7 +7,7 @@ defined('SYSPATH') or die('No direct access allowed.');
  */
 abstract class Model_Crud extends ORM {
     
-    public $_from_fields = array();
+    public $_form_fields = array();
     public $_grid_fields = array();
     
     public function labels() {
