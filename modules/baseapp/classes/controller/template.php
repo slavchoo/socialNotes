@@ -39,6 +39,7 @@ abstract class Controller_Template extends Kohana_Controller_Template {
      */
     protected $_ajax = FALSE;
     protected $enable_group = NULL;
+    protected $_static_config = 'static'; // config name with js and css
 
     public function before() {
         parent::before();
@@ -47,14 +48,16 @@ abstract class Controller_Template extends Kohana_Controller_Template {
             $this->_ajax = TRUE;
         } else {
             $static_resources = new Kohana_Config_File_Reader();
-            $bundle = $static_resources->load('static');
-            
-            foreach ($bundle['css'] as $css_link){
+            $bundle = $static_resources->load($this->_static_config);
+
+            foreach ($bundle['css'] as $css_link) {
                 Static_Css::getInstance()->add($css_link);
             }
-            foreach ($bundle['js'] as $js_link){
+            foreach ($bundle['js'] as $js_link) {
                 Static_Js::getInstance()->add($js_link);
             }
+
+            Static_Hack::getInstance()->add($bundle['hack']);
         }
 
         $this->_auth = Auth::instance();

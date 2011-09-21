@@ -77,7 +77,7 @@ class Grid_Column_Action extends Grid_Column {
 			$params = $this->params + array($param => $value);
 			$url = $this->route->uri($params);
 		}
-
+                $class['title'] = $text;
 		return HTML::anchor($url, $text, $class);
 	}
 

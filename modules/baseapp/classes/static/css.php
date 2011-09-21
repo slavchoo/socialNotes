@@ -17,7 +17,7 @@ class Static_CSS extends Static_Resources {
         $str = "";
         foreach ($this->resources as $resource)
         {
-            $str .= Html::style($resource);
+            $str .= Html::style($resource)."\n";
         }
         return $str;
     }

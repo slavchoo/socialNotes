@@ -17,7 +17,7 @@ class Static_JS extends Static_Resources {
         $str = "";
         foreach ($this->resources as $resource)
         {
-            $str .= HTML::script($resource);
+            $str .= HTML::script($resource)."\n";
         }
         return $str;
     }

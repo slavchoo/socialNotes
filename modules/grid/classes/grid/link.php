@@ -25,7 +25,7 @@ class Grid_Link {
 	 */
 	public $text;
 
-	/**
+        /**
 	 * Set the link type
 	 *
 	 * @param   string  [optional] link type
