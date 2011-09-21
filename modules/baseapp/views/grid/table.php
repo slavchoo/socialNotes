@@ -50,24 +50,11 @@ foreach ($dataset as $data) {
 echo '</tbody>';
 
 echo '</table>';
-if (!isset($container_footer)):
-    ?> 
-    <footer>
-        <?php // echo $container_footer; ?>
-        <div class="submit_link">
-            <?php
-            echo count($links) > 1 ? '<ul>' : null;
-            foreach ($links as $link) {
-                echo count($links) > 1 ? '<li>' : null;
-                echo $link;
-                echo count($links) > 1 ? '</li>' : null;
-            }
-            echo count($links) > 1 ? '</ul>' : null;
-            ?>
-        </div>
-    </footer>
+?> 
+<footer>
+    <?php echo View::factory('admin/template/container/table/footer', array('links' => $links)) ?>
+</footer>
 <?php
-endif;
 if (isset($benchmark)) {
     Profiler::stop($benchmark);
 }

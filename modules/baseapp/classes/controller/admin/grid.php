@@ -33,7 +33,10 @@ abstract class Controller_Admin_GRID extends Controller_Admin {
         }
 
         //render
-        $this->template->content = $form->render();
+        $block = View::factory('admin/template/block/full');
+        $block->module_header = I18n::get('Edit form');
+        $block->module_content = $form->render();
+        $this->template->content = $block;
     }
 
     public function action_create() {
@@ -56,7 +59,11 @@ abstract class Controller_Admin_GRID extends Controller_Admin {
         }
 
         //render
-        $this->template->content = $form->render();
+        
+        $block = View::factory('admin/template/block/full');
+        $block->module_header = I18n::get('Edit form');
+        $block->module_content = $form->render();
+        $this->template->content = $block;
     }
 
     public function action_delete() {

@@ -229,7 +229,6 @@ abstract class Formo_Core_Driver {
 	{
 		if (func_num_args() === 0)
 			return $this->_get_val();
-
 		// Set the value
 		$this->_set_val($value);
 
