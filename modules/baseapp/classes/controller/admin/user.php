@@ -3,4 +3,5 @@
 class Controller_Admin_User extends Controller_Admin_GRID{
     
     protected $_model = 'user';
+    
 }

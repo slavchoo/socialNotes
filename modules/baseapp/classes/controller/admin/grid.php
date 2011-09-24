@@ -112,7 +112,8 @@ abstract class Controller_Admin_GRID extends Controller_Admin {
 
     public function grid($obj_orm) {
         $grid = new Grid();
-        $grid->link()->action($this->_action_prefix . $this->_model . '/create')->text(I18n::get('add new'))->class('alt_btn');
+        $url = Route::url($this->get_route_name(), array('action' => 'create'));
+        $grid->link()->action($url)->text(I18n::get('add new'))->class('alt_btn');
         $orm = ORM::factory($this->_model);
         $labels = $orm->labels();
         $grid_fields = ORM::factory($this->_model)->_grid_fields;
@@ -145,7 +146,9 @@ abstract class Controller_Admin_GRID extends Controller_Admin {
      * @param Grid $grid 
      */
     public function grid_after(Grid $grid) {
-        $grid->column('action')->title(I18n::get('Actions'))->url($this->_action_prefix . $this->_model . '/edit')->text(I18n::get('edit'))->class('edit');
+        $url = Route::url($this->get_route_name(), array('action' => 'edit'));
+        $grid->column('action')->title(I18n::get('Actions'))->url($url)->text(I18n::get('edit'))->class('edit');
+        $url = Route::url($this->get_route_name(), array('action' => 'delete'));
         $grid->column('action')->title(I18n::get('Actions'))->url($this->_action_prefix . $this->_model . '/delete')->text(I18n::get('delete'))->class('delete');
 
         $block = View::factory('admin/template/block/full');
