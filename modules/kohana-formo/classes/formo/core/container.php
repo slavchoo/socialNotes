@@ -122,7 +122,7 @@ abstract class Formo_Core_Container {
 			if ($find_by == 'item' AND $search == $field->alias())
 				return $field;
 
-			if ($option AND $find_by == 'item' AND call_user_func($option, $search) == $field->alias())
+			if ($option AND $find_by = $option($search) == $field->alias())
 				return $field;
 		}
 	}
@@ -137,7 +137,9 @@ abstract class Formo_Core_Container {
 	 */
 	public function __call($func, $args)
 	{
-		return call_user_func_array(array($this->driver(), $func), $args);
+		$driver = $this->driver();
+		$method = new ReflectionMethod($driver, $func);
+		return $method->invokeArgs($driver, (array) $args);
 	}
 
 	/**
@@ -187,8 +189,8 @@ abstract class Formo_Core_Container {
 			return $this;
 		}
 
-		// Otherwise let the driver do the setting
-		$this->driver()->set($variable, $value);
+		// Otherwise set the value here
+		$this->$variable = $value;
 
 		return $this;
 	}
@@ -323,7 +325,7 @@ abstract class Formo_Core_Container {
 	 * @param mixed $default. (default: FALSE)
 	 * @return mixed
 	 */
-	public function get($variable, $default = FALSE, $shallow_look = FALSE)
+	public function get($variable, $default = FALSE)
 	{
 		$arrays = array('_defaults', '_settings', '_customs');
 
@@ -335,12 +337,11 @@ abstract class Formo_Core_Container {
 			}
 		}
 		
-		if ($shallow_look === TRUE)
-			// Don't keep searching deeper
-			return $default;
-
-		// Otherwise run get through the driver
-		return $this->driver()->get($variable, $default, $shallow_look);
+		if (isset($this->$variable))
+			return $this->$variable;
+		
+		// Return the default if every check failed
+		return $default;
 	}
 
 	/**
@@ -442,17 +443,12 @@ abstract class Formo_Core_Container {
 		{
 			$order = $field->get('order');
 			$args = array($field);
-			if (is_array($order))
-			{
-				$args[] = key($order);
-				$args[] = current($order);
-			}
-			else
-			{
-				$args[] = $order;
-			}
+			$args = (array) $order;
+			array_unshift($args, $field);
+			$args = array_pad($args, 3, NULL);
 
-			call_user_func_array(array($this, 'order'), $args);
+			$method = new ReflectionMethod($this, 'order');
+			$method->invokeArgs($this, $args);
 		}
 
 		$field->driver()->append();
@@ -690,7 +686,12 @@ abstract class Formo_Core_Container {
 		{
 			foreach ($field as $_field => $_value)
 			{
-				$this->order($_field, $_value);
+				$args = (array) $_value;
+				array_unshift($args, $_field);
+				$args = array_pad($args, 3, NULL);
+				
+				$method = new ReflectionMethod($this, 'order');
+				$method->invokeArgs($this, $args);
 			}
 			
 			return $this;
@@ -736,18 +737,13 @@ abstract class Formo_Core_Container {
 		// Fetch the current settings
 		$driver = $this->get('driver');
 		$instance = $this->get('driver_instance');
-		$class = 'Formo_Driver_'.ucfirst($driver);
+		$class = Formo::config($this, 'driver_prefix').ucfirst($driver);
 
 		// If the instance is the correct driver for the field, return it
 		if ($instance AND $instance instanceof $class)
 			return $instance;
 
-		// Build the class name
-                $config = new Kohana_Config_File_Reader();
-                $bundle = $config->load('formo');
-		$driver_class_name = $bundle['driver_prefix'].ucfirst($driver);
-
-		$instance = new $driver_class_name($this);
+		$instance = new $class($this);
 
 		if ($save_instance === TRUE)
 		{
@@ -789,7 +785,7 @@ abstract class Formo_Core_Container {
 			return $instance;
 
 		// Get the driver neame
-		$driver = Kohana::$config->load('formo')->orm_driver;
+		$driver = Formo::config($this, 'orm_driver');
 
 		// Create the new instance
 		$instance = new $driver($this);

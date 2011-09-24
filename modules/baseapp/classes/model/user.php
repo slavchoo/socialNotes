@@ -59,9 +59,6 @@ class Model_User extends Model_Auth_User {
             'user_tokens' => array(
                 'render' => FALSE,
             ),
-            'notes' => array(
-                'driver' => 'textarea'
-            ),
             'password' => array(
                 'driver' => 'password',
             ),

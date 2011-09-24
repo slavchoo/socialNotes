@@ -550,7 +550,7 @@ abstract class Formo_Core_ORM_Kohana extends Formo_ORM {
 		// First check to see if there are any query options to limit the records
 		if ($limit = $this->_form->$alias->get('records'))
 		{
-			$query = call_user_func($limit, $query);
+			$query = $limit($query);
 		}
 
 		// Create the array
@@ -558,10 +558,11 @@ abstract class Formo_Core_ORM_Kohana extends Formo_ORM {
 		foreach ($query->find_all() as $row)
 		{
 			$primary_key = $row->primary_key();
-//			$primary_val = $row->primary_val();
-			$primary_val = $row->{$primary_key};
 
-                        $opts[$primary_val] = $row->{$primary_key};
+			$primary_val = Formo::config($this->_form->$alias, 'orm_primary_val');
+
+			// Use the primary value
+			$opts[$row->{$primary_val}] = $row->{$primary_key};
 		}
 
 		// Add the options to the field

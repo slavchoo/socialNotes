@@ -55,7 +55,8 @@ abstract class Formo_Core_Validator extends Formo_Container {
 		if (is_callable(array($this->_validation, $method)))
 		{
 			// Run validation methods inside the validation object
-			call_user_func_array(array($this->_validation, $method), $args);
+			$method = new ReflectionMethod($this->_validation, $method);
+			$method->invokeArgs($this->_validation, $args);
 
 			return $this;
 		}
@@ -132,8 +133,10 @@ abstract class Formo_Core_Validator extends Formo_Container {
 		{
 			$this->_add_rules($this->_validation);
 			// Add this value to the validation object
-//                        $this->_validation[$this->alias()] = $this->val();
-                        $this->_validation->bind($this->alias(), $this->val());
+			$data = $this->_validation->data();
+			$data += array($this->alias() => $this->val());
+			$this->_validation = $this->_validation->copy($data);
+
 			$has_errors = $this->_determine_errors() === FALSE;
 		}
 		return $has_errors === FALSE;
@@ -168,7 +171,7 @@ abstract class Formo_Core_Validator extends Formo_Container {
 	{
 		if ($this->_validation->errors())
 			return FALSE;
-
+		
 		return $this->_validation->check();
 	}
 
@@ -308,6 +311,13 @@ abstract class Formo_Core_Validator extends Formo_Container {
 		{
 			$errors += $field->errors($file, $translate);
 		}
+		
+		// Add this error
+		$file = $file
+			? $file
+			: Formo::config($this, 'message_file');
+
+		$errors += $this->_validation->errors($file, $translate);
 
 		return $errors;
 	}
@@ -315,9 +325,7 @@ abstract class Formo_Core_Validator extends Formo_Container {
 	// Determine which message file to use
 	public function message_file()
 	{
-		return $this->get('message_file')
-			? $this->get('message_file')
-			: Kohana::$config->load('formo')->message_file;
+		return Formo::config($this, 'message_file');
 	}
 
 	public static function range($field, $form)

@@ -59,7 +59,7 @@ abstract class Controller_Admin_GRID extends Controller_Admin {
         }
 
         //render
-        
+
         $block = View::factory('admin/template/block/full');
         $block->module_header = I18n::get('Edit form');
         $block->module_content = $form->render();
@@ -91,7 +91,7 @@ abstract class Controller_Admin_GRID extends Controller_Admin {
 
         if ($order_label) {
             $find_title = array_search($order_label, ORM::factory($this->_model)->labels());
-            $find_title = empty($find_title)? $order_label : $find_title;
+            $find_title = empty($find_title) ? $order_label : $find_title;
             if (!empty($find_title)) {
                 $find_title = $order_label;
                 $this->_sorting[$find_title] = $direction;
@@ -116,12 +116,12 @@ abstract class Controller_Admin_GRID extends Controller_Admin {
         $orm = ORM::factory($this->_model);
         $labels = $orm->labels();
         $grid_fields = ORM::factory($this->_model)->_grid_fields;
-        
+
         foreach ($grid_fields as $field_name => $field_data) {
             if (empty($field_data)) {
 //                $field_data = Kohana::$config->load('grid')->as_array();
-                  $config = new Kohana_Config_File_Reader();
-                  $field_data = $config->load('grid');
+                $config = new Kohana_Config_File_Reader();
+                $field_data = $config->load('grid');
             }
             $label = isset($labels[$field_name]) ? $labels[$field_name] : $field_name;
             $obj = $grid->column($field_data['type'])->field($field_name)->title(I18n::get($label));
@@ -147,26 +147,25 @@ abstract class Controller_Admin_GRID extends Controller_Admin {
     public function grid_after(Grid $grid) {
         $grid->column('action')->title(I18n::get('Actions'))->url($this->_action_prefix . $this->_model . '/edit')->text(I18n::get('edit'))->class('edit');
         $grid->column('action')->title(I18n::get('Actions'))->url($this->_action_prefix . $this->_model . '/delete')->text(I18n::get('delete'))->class('delete');
-        
+
         $block = View::factory('admin/template/block/full');
         $block->module_header = 'GRID';
         $block->module_content = View::factory('admin/template/container/tab');
         $block->module_content->container_content = $grid->render();
-        $this->template->content .= $block; 
+        $this->template->content .= $block;
     }
 
     public function action_index() {
         parent::action_index();
         $this->action_grid();
     }
-    
-    public function get_route_name(){
-        return 'admin_'.$this->_model;
+
+    public function get_route_name() {
+        return 'admin_' . $this->_model;
     }
-    
-    public function get_curr_route_index_url(){
-        return Route::url($this->get_route_name(),array('action'=>'index'));
+
+    public function get_curr_route_index_url() {
+        return Route::url($this->get_route_name(), array('action' => 'index'));
     }
-    
 
 }

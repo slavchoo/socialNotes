@@ -80,10 +80,7 @@ abstract class Formo_Core_Driver {
 		$this->_field = $field;
 
 		// Determine the original view type
-		$kind = ($kind = $this->_field->get('kind'))
-			? $kind
-			// Fall back on the default form type
-			: Kohana::$config->load('formo')->kind;
+		$kind = Formo::config($this->_field, 'kind');
 
 		$this->make_view($kind);
 	}
@@ -122,22 +119,6 @@ abstract class Formo_Core_Driver {
 		$this->_view->append();
 	}
 
-	public function set($variable, $value)
-	{
-		// Just set the field value
-		$this->_field->$variable = $value;
-
-		return $this->_field;
-	}
-
-	public function get($variable, $default, $shallow_look = FALSE)
-	{
-		// Return the field value if it's set, or the default value if it's not
-		return (isset($this->_field->$variable))
-			? $this->_field->$variable
-			: $default;
-	}
-	
 	public function format_alias($alias)
 	{
 		return str_replace(' ', '_', $alias);
@@ -229,6 +210,7 @@ abstract class Formo_Core_Driver {
 	{
 		if (func_num_args() === 0)
 			return $this->_get_val();
+
 		// Set the value
 		$this->_set_val($value);
 
@@ -238,9 +220,45 @@ abstract class Formo_Core_Driver {
 		return $this;
 	}
 	
+	/**
+	 * Whether the 'new_value' parameter is set
+	 * 
+	 * @access public
+	 * @return boolean
+	 */
 	public function val_isset()
 	{
 		return Formo::is_set($this->_field->get('new_value'));
+	}
+	
+	/**
+	 * Determine if the field's value has changed
+	 * 
+	 * @access public
+	 * @return boolean
+	 */
+	public function is_changed()
+	{
+		$value = $this->_field->get('value');
+		$new_value = $this->_field->get('new_value');
+		
+		echo Debug::vars($value, $new_value);
+		
+		if ( ! $this->val_isset())
+			return FALSE;
+
+		return $value != $new_value;
+	}
+	
+	/**
+	 * Return the previous value
+	 * 
+	 * @access public
+	 * @return mixed
+	 */
+	public function last_val()
+	{
+		return $this->_field->get('value');
 	}
 	
 	/**
@@ -251,7 +269,7 @@ abstract class Formo_Core_Driver {
 	 */
 	public function name()
 	{
-		if ( ! Kohana::$config->load('formo')->namespaces)
+		if ( ! Formo::config($this->_field, 'namespaces'))
 			return $this->_field->alias();
 
 		if ( ! $parent = $this->_field->parent())
@@ -308,7 +326,10 @@ abstract class Formo_Core_Driver {
 	public function orm($method)
 	{
 		$args = array_slice(func_get_args(), 1);
-		return call_user_func_array(array($this->_field->orm_driver(), $method), $args);
+
+		$orm = $this->_field->orm_driver();
+		$method = new ReflectionMethod($orm, $method);
+		return $method->invokeArgs($orm, (array) $args);
 	}
 	
 	public function has_orm()
@@ -428,10 +449,13 @@ abstract class Formo_Core_Driver {
 			$prefix = ($parent = $this->_field->parent())
 				? $parent->get('view_prefix', NULL)
 				: NULL;
+			
+			// Set the view prefix so children can use it
+			$this->_field->set('view_prefix', $prefix);
 		}
 
 		// If prefix is still set to NULL and config file has one defined, use the config prefix
-		if ($prefix === NULL AND $_prefix = Kohana::$config->load('formo')->view_prefix)
+		if ($prefix === NULL AND $_prefix = Formo::config($this->_field, 'view_prefix'))
 		{
 			$prefix = $_prefix;
 		}

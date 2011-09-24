@@ -27,9 +27,9 @@ class Formo_Core_Formo {
 	 * @param mixed array $options. (default: NULL)
 	 * @return Formo_Form object
 	 */
-	public static function form($alias = NULL, $driver = NULL, array $options = NULL, $prefix = NULL)
+	public static function form($alias = NULL, $driver = NULL, array $options = NULL)
 	{
-		return new Formo_Form($alias, $driver, $options, $prefix);
+		return new Formo_Form($alias, $driver, $options);
 	}
 
 	/**
@@ -68,21 +68,6 @@ class Formo_Core_Formo {
 		$settings['alias'] = $alias;
 
 		return new Formo_Field($settings);
-	}
-
-	/**
-	 * Return a new render object
-	 *
-	 * @access public
-	 * @static
-	 * @param mixed $type
-	 * @param mixed $options
-	 * @return Render object
-	 */
-	public static function render_obj($type, $options)
-	{
-		$class = Kohana::$config->load('formo')->render_classes[$type];
-		return new $class($options);
 	}
 
 	/**
@@ -164,6 +149,20 @@ class Formo_Core_Formo {
 		}
 
 		return $assoc_array;
+	}
+	
+	public static function config($field, $config_item, $file = 'formo')
+	{
+		// Fist check for the field
+		if ($value = $field->get($config_item, FALSE))
+			return $value;
+		
+		// Next check against the parent
+		if ($parent = $field->parent() AND $value = $parent->get($config_item, FALSE))
+			return $value;
+		
+		// Finally, result to the Config file
+		return Kohana::$config->load($file.'.'.$config_item);
 	}
 
 }
