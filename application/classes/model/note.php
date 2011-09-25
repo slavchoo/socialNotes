@@ -19,11 +19,15 @@ class Model_Note extends Model_Crud {
             'callback' => NULL,
         ),
     );
-    
     protected $_created_column = array(
-      'column' => 'created_at',
-      'format' => TRUE,
+        'column' => 'created_at',
+        'format' => TRUE,
     );
-        
+    protected $_belongs_to = array(
+        'user' => array(
+            'model' => 'user',
+            'foreign_key' => 'user_id',
+        ),
+    );
 
 }

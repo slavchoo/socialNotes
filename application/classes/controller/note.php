@@ -9,14 +9,18 @@ class Controller_Note extends Controller_Template {
     public function action_index() {
         $username = $this->request->param('username');
 
-        $user = ORM::factory('user');
-        
         try {
-            
-        } catch (Exception $e) {
-            die($e->getMessage());
+            if ($username) {
+                $user = Model_User::get_user_by_name($username);
+                $notes = $user->notes->find_all();
+            } else {
+                $notes = $this->_user->notes->find_all();
+            }
+        } catch (Kohana_Exception $e) { //todo create custom exception
+            //todo handling
         }
-        die;
+
+        $this->template->content = View::factory('frontend/note/index', array('notes' => $notes));
     }
 
 }
