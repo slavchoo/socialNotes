@@ -15,6 +15,8 @@ class Controller_Auth extends Controller_Template {
         if (!$user)
         {
             Request::current()->redirect('auth/login');
+        }else{
+            Request::current()->redirect('admin/user/profile');
         }
     }
     
