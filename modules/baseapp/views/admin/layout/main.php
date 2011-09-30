@@ -50,18 +50,21 @@
 
         <header id="header">
             <hgroup>
-                <h1 class="site_title"><a href="index.html">Website Admin</a></h1>
-                <h2 class="section_title">Dashboard</h2><div class="btn_view_site"><a href="http://www.medialoot.com">View Site</a></div>
+                <h1 class="site_title"><a href="<?php echo Route::url('admin');?>">Website Admin</a></h1>
+                <h2 class="section_title">Dashboard</h2>
+                <div class="btn_view_site">
+                    <a href="<?php echo Route::url('default')?>">View Site</a>
+                </div>
             </hgroup>
         </header> <!-- end of header bar -->
 
         <section id="secondary_bar">
             <div class="user">
-                <p><?php echo $_user->username;?> (<a href="#">3 Messages</a>)</p>
+                <p><?php echo $_user->username; ?> (<a href="#">3 Messages</a>)</p>
                 <!-- <a class="logout_user" href="#" title="Logout">Logout</a> -->
             </div>
             <div class="breadcrumbs_container">
-                <article class="breadcrumbs"><a href="index.html">Website Admin</a> <div class="breadcrumb_divider"></div> <a class="current">Dashboard</a></article>
+                <article class="breadcrumbs"><a href="<?php echo Route::url('admin');?>">Website Admin</a> <div class="breadcrumb_divider"></div> <a class="current">Dashboard</a></article>
             </div>
         </section><!-- end of secondary bar -->
 

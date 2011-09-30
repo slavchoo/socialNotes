@@ -2,4 +2,6 @@
 
 <?php
 
-class Controller_Admin_Main extends Controller_Baseapp_Admin_Main{}
+class Controller_Baseapp_Admin_Main extends Controller_Admin{
+    
+}
