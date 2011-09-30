@@ -30,4 +30,12 @@ class Model_Note extends Model_Crud {
         ),
     );
 
+    public function formo() {
+        return array(
+            'text' => array(
+                'driver' => 'textarea'
+            ),
+        );
+    }
+
 }

@@ -91,6 +91,8 @@ Kohana::$log->attach(new Log_File(APPPATH . 'logs'));
  */
 Kohana::$config->attach(new Config_File);
 
+Cookie::$salt = "sdsE6hhd";
+
 /**
  * Enable modules. Modules are referenced by a relative or absolute path.
  */
@@ -114,7 +116,7 @@ Kohana::modules(array(
  * defaults for the URI.
  */
 
-Route::set('user_notes', 'notes(/<username>(/<action>))')
+Route::set('user_notes', 'notes(/<username>(/<action>(/<id>)))')
         ->defaults(array(
             'controller' => 'note',
             'action' => 'index'
